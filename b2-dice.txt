@@ -1,0 +1,143 @@
+Main.dart
+
+
+import 'package:flutter/material.dart';
+import 'package:untitled/dice.dart';
+
+
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: DiceRoller(), //change class name
+    );
+  }
+}
+
+
+
+
+
+
+
+
+import 'package:flutter/material.dart';
+
+class QuizApp extends StatefulWidget {
+  const QuizApp({super.key});
+
+  @override
+  _QuizAppState createState() => _QuizAppState();
+}
+
+class _QuizAppState extends State<QuizApp> {
+  int _questionIndex = 0;
+  int _score = 0;
+
+  final List<Map<String, Object>> _questions = [
+    {
+      'questionText': 'Flutter is developed by Google.',
+      'answer': true,
+    },
+    {
+      'questionText': 'Dart is a compiled language.',
+      'answer': true,
+    },
+    {
+      'questionText': 'Widgets in Flutter are immutable.',
+      'answer': true,
+    },
+    {
+      'questionText': 'Flutter uses Java for app development.',
+      'answer': false,
+    },
+  ];
+
+  void _answerQuestion(bool userAnswer) {
+    bool correctAnswer = _questions[_questionIndex]['answer'] as bool;
+
+    setState(() {
+      if (userAnswer == correctAnswer) {
+        _score++;
+      }
+
+      if (_questionIndex < _questions.length - 1) {
+        _questionIndex++;
+      } else {
+        // Quiz completed
+        _showQuizResult();
+      }
+    });
+  }
+
+  void _resetQuiz() {
+    setState(() {
+      _questionIndex = 0;
+      _score = 0;
+    });
+  }
+
+  void _showQuizResult() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Quiz Completed'),
+          content: Text('Your score: $_score/${_questions.length}'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _resetQuiz();
+              },
+              child: const Text('Restart Quiz'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Flutter Quiz App',
+        ),
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            _questions[_questionIndex]['questionText'] as String,
+            style: const TextStyle(fontSize: 20),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              ElevatedButton(
+                onPressed: () => _answerQuestion(true),
+                child: const Text('True'),
+              ),
+              ElevatedButton(
+                onPressed: () => _answerQuestion(false),
+                child: const Text('False'),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
