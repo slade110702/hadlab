@@ -23,121 +23,65 @@ class MyApp extends StatelessWidget {
 }
 
 
-
-
-
-
-
-
 import 'package:flutter/material.dart';
+import 'dart:math';
 
-class QuizApp extends StatefulWidget {
-  const QuizApp({super.key});
+final randomizer = Random();
+
+class DiceRoller extends StatefulWidget {
+  const DiceRoller({Key? key}) : super(key: key);
 
   @override
-  _QuizAppState createState() => _QuizAppState();
+  State<DiceRoller> createState() {
+    return _DiceRollerState();
+  }
 }
 
-class _QuizAppState extends State<QuizApp> {
-  int _questionIndex = 0;
-  int _score = 0;
+class _DiceRollerState extends State<DiceRoller> {
+  var currentDiceRoll = 2;
 
-  final List<Map<String, Object>> _questions = [
-    {
-      'questionText': 'Flutter is developed by Google.',
-      'answer': true,
-    },
-    {
-      'questionText': 'Dart is a compiled language.',
-      'answer': true,
-    },
-    {
-      'questionText': 'Widgets in Flutter are immutable.',
-      'answer': true,
-    },
-    {
-      'questionText': 'Flutter uses Java for app development.',
-      'answer': false,
-    },
-  ];
-
-  void _answerQuestion(bool userAnswer) {
-    bool correctAnswer = _questions[_questionIndex]['answer'] as bool;
-
+  void rollDice() {
     setState(() {
-      if (userAnswer == correctAnswer) {
-        _score++;
-      }
-
-      if (_questionIndex < _questions.length - 1) {
-        _questionIndex++;
-      } else {
-        // Quiz completed
-        _showQuizResult();
-      }
+      currentDiceRoll = randomizer.nextInt(6) + 1;
     });
-  }
-
-  void _resetQuiz() {
-    setState(() {
-      _questionIndex = 0;
-      _score = 0;
-    });
-  }
-
-  void _showQuizResult() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Quiz Completed'),
-          content: Text('Your score: $_score/${_questions.length}'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _resetQuiz();
-              },
-              child: const Text('Restart Quiz'),
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Flutter Quiz App',
+      backgroundColor: Colors.blue.shade100,
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              'asset/dice-$currentDiceRoll.png',
+              width: 300,
+            ),
+            TextButton(
+              onPressed: rollDice,
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.only(
+                  top: 10,
+                  bottom: 10,
+                  left: 12,
+                  right: 12,
+                ),
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.blue,
+                textStyle: const TextStyle(fontSize: 28),
+              ),
+              child: const Text("ROLL ON"),
+            )
+          ],
         ),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            _questions[_questionIndex]['questionText'] as String,
-            style: const TextStyle(fontSize: 20),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              ElevatedButton(
-                onPressed: () => _answerQuestion(true),
-                child: const Text('True'),
-              ),
-              ElevatedButton(
-                onPressed: () => _answerQuestion(false),
-                child: const Text('False'),
-              ),
-            ],
-          ),
-        ],
-      ),
     );
   }
 }
+
+
+
+
+
+
